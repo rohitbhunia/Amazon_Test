@@ -8,6 +8,11 @@ export class ProductPage {
   readonly cartCount: Locator;
   readonly cartLink: Locator;
   readonly cartProduct: Locator;
+  readonly proceedToCheckoutButton: Locator;
+  readonly signInEmail: Locator;
+  readonly continueSignIn: Locator;
+  readonly signInPassword: Locator;
+  readonly submitSignIn: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -17,6 +22,11 @@ export class ProductPage {
     this.cartCount = page.locator('#nav-cart-count');
     this.cartLink = page.locator('#nav-cart');
     this.cartProduct = page.locator('#sc-active-cart').getByRole('heading', { name: /iphone.*17e.*256/i }).first();
+    this.proceedToCheckoutButton = page.locator('input[name="proceedToRetailCheckout"]');
+    this.signInEmail = page.locator('#ap_email, #ap_email_login');
+    this.continueSignIn = page.locator('#continue');
+    this.signInPassword = page.locator('#ap_password');
+    this.submitSignIn = page.locator('#signInSubmit');
   }
 
   async verifyProductTitle() {
@@ -41,5 +51,27 @@ export class ProductPage {
   async verifyProductVisibleInCart() {
     await expect(this.page).toHaveURL(/cart|gp\/cart/i);
     await expect(this.cartProduct).toBeVisible();
+  }
+
+  async verifyProductReadyForCheckout() {
+    await expect(this.proceedToCheckoutButton).toBeVisible();
+    await expect(this.proceedToCheckoutButton).toBeEnabled();
+  }
+
+  async proceedToBuy() {
+    await this.proceedToCheckoutButton.click();
+    await this.page.waitForLoadState('domcontentloaded');
+  }
+
+  async signInPage(email: string, password: string) {
+    await this.signInEmail.fill(email);
+
+    if (await this.continueSignIn.isVisible()) {
+      await this.continueSignIn.click();
+    }
+
+    await this.signInPassword.fill(password);
+    await this.submitSignIn.click();
+    await this.page.waitForLoadState('domcontentloaded');
   }
 }
