@@ -1,5 +1,6 @@
 import { test, expect } from './Fixtures/test-base';
 import { ProductPage } from './pages/productPage';
+import { PaymentPage } from './pages/paymentPage';
 
 test.describe('Amazon Product Validation', () => {
 
@@ -67,6 +68,7 @@ await productPage.signInPage(
   amazonEmail,
   amazonPassword
 );
-  });
+  
 
+  });
 });
